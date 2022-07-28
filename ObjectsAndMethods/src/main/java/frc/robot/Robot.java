@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,12 +17,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  /*DigitalInput button_a = new DigitalInput(0);
+  DigitalOutput yellow_led = new DigitalOutput(3);
+  DigitalInput button_b = new DigitalInput(1);
+  DigitalOutput red_led = new DigitalOutput(2);
+  //DigitalInput button_c = new DigitalInput(2);
+  //DigitalOutput green_led = new DigitalOutput(1);
+  */
+
+  
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
+  int runs = 0;
+  double targetspeed = .3;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,6 +70,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
+    //yellow_led.set(false);
+    //red_led.set(true);
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
 
@@ -78,11 +94,52 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    runs=0;
+    targetspeed=.3;
+    //yellow_led.set(true);
+    //red_led.set(false);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(runs<70){
+      targetspeed = targetspeed +.01;
+      m_drivetrain.arcadeDrive(targetspeed,0);
+      
+
+    }
+    else if (runs>=70&&runs<=140){
+      targetspeed = targetspeed -.01;
+      m_drivetrain.arcadeDrive(targetspeed,0);
+    }
+    
+    else if(runs>140){
+      m_drivetrain.arcadeDrive(0,0);
+    }
+    runs=runs+1;
+    
+    
+    /*if(button_a.get()){
+      yellow_led.set(true);
+    }
+    else{
+      yellow_led.set(false);
+    }
+    if(button_b.get()){
+      red_led.set(true);
+    }
+    else{
+      red_led.set(false);
+    }
+    /*if(button_c.get()){
+      green_led.set(true);
+    }
+    else{
+      green_led.set(false);
+    }*/
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
